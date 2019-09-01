@@ -1,0 +1,172 @@
+{
+    "page": {
+        "temCaptain": {
+            "name": "体验团长页",
+            "title": "0元升级VIP成为团长",
+            "clickTip": "限时99升级 立返99"
+        },
+        "vipPay": {
+            "name": "VIP支付页",
+            "title": "限时0元升级 付费99 立返99"
+        },
+        "myFans": {
+            "name": "我的粉丝页",
+            "title": "限时0元升级VIP"
+        },
+        "captionTab": {
+            "name": "团长Tab页",
+            "title_temCaption": "限时${price}元升级VIP",
+            "title_willExpire": "限时${price}元续费"
+        },
+        "farmIndex": {
+            "name": "农场页",
+            "inviteTips": "邀请${num}粉丝下单，即可免费升团长",
+            "num": "10个",
+            "subInviteTips": "",
+            "percent": ""
+        },
+        "checkIN": {
+            "name": "签到领红包",
+            "tips": "邀请${num}粉丝下单升团长",
+            "subTips": "团长享高达40%返现"
+        },
+        "tiXianDetail": {
+            "name": "提现详情页",
+            "captain": {
+                "raiders": {
+                    "subTitle": "新用户助力可绑粉,粉丝下单团长赚钱",
+                    "bannerText": "引导粉丝下单，享粉丝长期收益"
+                },
+                "headerBottomTips": "邀新用户助力可绑粉，粉丝下单团长赚钱"
+            },
+            "notCaptain": {
+                "raiders": {
+                    "subTitle": "邀请更多好友助力,解锁更多助力金额",
+                    "bannerText": "本单错过${missPrice}元，成为团长即享返现"
+                },
+                "headerBottomTips": "邀请更多好友助力，解锁更多助力金额"
+            }
+        },
+        "vipInvite": {
+            "name": "团长3.0vip邀新常态",
+            "invite": {
+                "name": "邀请页",
+                "banner": "https://h0.hucdn.com/open201926/2c4614cf0e3a161a_750x399.png",
+                "qrcodeBg": "https://h0.hucdn.com/open201931/f3699ecd28b8a549_718x232.png",
+                "bgColor": "#f5f5f5"
+            },
+            "shared": {
+                "name": "落地页",
+                "banner": "https://h0.hucdn.com/open201926/31b7b9330133f519_750x358.png",
+                "captainImg": "https://h0.hucdn.com/open201926/f1baaa534dba45c2_718x550.png",
+                "moneyStep": "https://h0.hucdn.com/open201926/1c3df315db0786ea_718x1512.png",
+                "bgColor": "#c0141f"
+            }
+        },
+        "inviteFriendV2": {
+            "name": "VIP增长2期（常态）",
+            "invite": {
+                "name": "邀请页",
+                "banner": "https://h0.hucdn.com/open201922/f5adb52295026519_750x592.png",
+                "rewardIntro": "https://h0.hucdn.com/open201922/63eba5dd74e01f1e_718x1718.png",
+                "qrcode": "https://h0.hucdn.com/open201922/7b471bde17e7bcc5_718x232.png",
+                "bgColor": "#FF6824"
+            },
+            "shared": {
+                "name": "落地页",
+                "banner": "https://h0.hucdn.com/open201922/0fcee57b337eadc4_748x589.png",
+                "coupons": "https://h0.hucdn.com/open201922/95438eb648f7eb8e_718x542.png",
+                "captainImg": "https://h0.hucdn.com/open201922/6b049cd27aa7140f_718x447.png",
+                "moneyStep": "https://h0.hucdn.com/open201924/33bee80ae753bdcb_718x1512.png",
+                "bgColor": "#FF6824"
+            },
+            "shared2": {
+                "name": "落地页2, 二期有两个落地页，看运营投放哪一个",
+                "mark": "coupons 券地址 https://h0.hucdn.com/open201925/eea33d50ad4cacc3_726x271.png",
+                "banner": "https://h0.hucdn.com/open201926/4316bcea639681fc_750x542.png",
+                "coupons": "",
+                "captainImg": "https://h0.hucdn.com/open201925/f2b3ced0f32b057f_718x447.png",
+                "moneyStep": "https://h0.hucdn.com/open201926/5b5961a34da87bec_718x1872.png",
+                "bgColor": "#ffe8b8"
+            }
+        },
+        "inviteFriendV3": {
+            "name": "VIP增长三期",
+            "invite": {
+                "name": "邀请页",
+                "banner": "https://h0.hucdn.com/open201926/a445e0f927b502b0_750x590.png",
+                "rewardIntro": "https://h0.hucdn.com/open201926/bff55b8a74e4aefa_1077x1595.png",
+                "welfare": "https://h0.hucdn.com/open201923/d34cad617ca251c6_723x750.png",
+                "qrcode": "https://h0.hucdn.com/open201923/f583bee7d1c08e12_718x232.png",
+                "bgColor": "#f44233"
+            },
+            "shared": {
+                "name": "落地页",
+                "banner": "https://h0.hucdn.com/open201923/42a23f6cc4010197_750x590.png",
+                "welfare1": "https://h0.hucdn.com/open201923/86830776ed73c651_718x360.png",
+                "welfare2": "https://h0.hucdn.com/open201923/ccd7cfca6bc9e7df_723x259.png",
+                "captainImg": "https://h0.hucdn.com/open201922/6b049cd27aa7140f_718x447.png",
+                "moneyStep": "https://h0.hucdn.com/open201923/2aca84cef0d4232f_718x1512.png",
+                "bgColor": "#f44233"
+            }
+        },
+        "inviteFriendV4": {
+            "name": "VIP增长四期",
+            "invite": {
+                "name": "团长页",
+                "banner": "https://h0.hucdn.com/open201934/fc18e7e0222f9f52_750x590.png",
+                "qrcodeBg": "https://h0.hucdn.com/open201931/f3699ecd28b8a549_718x232.png",
+                "bgColor": "#ffd188"
+            },
+            "shared": {
+                "name": "落地页",
+                "banner": "https://h0.hucdn.com/open201934/88e70c137b1f2ad9_750x590.png",
+                "ruleLink": "https://mp.beibei.com/hms2_page_n/richangyaoqinghuodong/sjhdgz.html",
+                "wxRuleLink": "/pages/mp/mibo-p564/mibo-p564",
+                "coupons": "https://h0.hucdn.com/open201934/77ec78e94edd6188_718x331.png",
+                "captainImg": "https://h0.hucdn.com/open201934/478fa5c41f7e233f_718x1665.png",
+                "bgColor": "#ffd188"
+            }
+        },
+        "inviteFriendV5": {
+            "name": "VIP增长五期",
+            "invite": {
+                "name": "团长页",
+                "banner1": "https://h0.hucdn.com/open201932/ff639a2d8dab78d9_750x590.png",
+                "banner2": "https://h0.hucdn.com/open201932/ff639a2d8dab78d9_750x590.png",
+                "banner3": "https://h0.hucdn.com/open201932/ff639a2d8dab78d9_750x590.png",
+                "coupon1": "https://h0.hucdn.com/open201932/63620a93dcbce45d_674x164.png",
+                "coupon2": "https://h0.hucdn.com/open201932/63620a93dcbce45d_674x164.png",
+                "bgColor": "#ffba5d"
+            },
+            "shared": {
+                "name": "非团长页",
+                "banner1": "https://h0.hucdn.com/open201932/81a2868c7831196f_750x590.png",
+                "banner2": "https://h0.hucdn.com/open201932/c5f7f610e529036b_750x590.png",
+                "coupon1": "https://h0.hucdn.com/open201932/63620a93dcbce45d_674x164.png",
+                "coupon2": "https://h0.hucdn.com/open201932/c8473bc54b0f505a_674x205.png",
+                "welfare": "https://h0.hucdn.com/open201928/d615c439f02523ba_718x1176.png",
+                "bgColor": "#ffba5d"
+            }
+        },
+        "inviteFriendV6": {
+            "name": "VIP增长六期",
+            "invite": {
+                "name": "团长页",
+                "banner": "https://h0.hucdn.com/open201930/9a7eae90e2ee708d_750x590.png",
+                "coupon": "https://h0.hucdn.com/open201930/bf9a7391f8464e00_674x164.png",
+                "raiders": "https://h0.hucdn.com/open201930/8cb588dea6af9754_718x305.png",
+                "qrcode": "https://h0.hucdn.com/open201930/f583bee7d1c08e12_718x232.png",
+                "bgColor": "#ff0052"
+            },
+            "shared": {
+                "name": "非团长页",
+                "banner": "https://h0.hucdn.com/open201930/677244dfdc78d7c0_750x590.png",
+                "coupon1": "https://h0.hucdn.com/open201930/8f3fadd4bf7a2ac4_674x164.png",
+                "coupon2": "https://h0.hucdn.com/open201930/59da361c9c37dba9_674x164.png",
+                "welfare": "https://h0.hucdn.com/open201928/d615c439f02523ba_718x1176.png",
+                "bgColor": "#ff0052"
+            }
+        }
+    }
+}
