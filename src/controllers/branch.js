@@ -79,7 +79,9 @@ const controller = {
             return;
         }
         try {
-            let publishResult = await branchService.handelPublishByBranch(branch);
+            let publishResult = await branchService.handelPublishByBranch({
+                branch,
+            });
             if (publishResult.status) {
                 result.success = true;
             }

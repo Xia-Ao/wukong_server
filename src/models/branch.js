@@ -92,7 +92,7 @@ const branch = {
     async isQueeHasTask(options) {
         let _sql = `
         SELECT * from branch
-        where yufa>0 and (published<=0 or merged_master<=0)
+        where yufa>0 and (published<=1 or merged_master<=0)
         limit 1`
         let result = await dbUtils.query(_sql)
         if (Array.isArray(result) && result.length > 0) {
@@ -108,9 +108,9 @@ const branch = {
      * @param  {String} branch 分支号
      * @return {object|null}        查找结果
      */
-    async handelYufaByBranch(branch) {
+    async handelYufaByBranch(branch, status) {
         let _sql = `
-            UPDATE branch set yufa=1
+            UPDATE branch set yufa=${status}
             where branch="${branch}"
             limit 1`
         let result = await dbUtils.query(_sql);
@@ -125,7 +125,7 @@ const branch = {
     async handelPublishedByBranch(options) {
         let _sql = `
             UPDATE branch set 
-                published=1 , 
+                published=${options.status} , 
                 published_time="${options.publishedTime}"
             where branch="${options.branch}"
             limit 1`
