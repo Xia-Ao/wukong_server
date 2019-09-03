@@ -18,9 +18,9 @@ const PATH = {
 
     PRODECTION: {
         testProject: {
-            SOURCE: '/root/workspace/wukongServer/testProject/sourceCode',
-            YUFA: '/root/workspace/wukongServer/testProject/yufa',
-            ONLINE: '/root/workspace/wukongServer/testProject/online',
+            SOURCE: '/root/workspace/wukongServer/projectFloder/testProject/sourceCode',
+            YUFA: '/root/workspace/wukongServer/projectFloder/testProject/yufa',
+            ONLINE: '/root/workspace/wukongServer/projectFloder/testProject/online',
         },
         VueDemo: {
             SOURCE: '/root/workspace/wukongServer/VueDemo/sourceCode',
