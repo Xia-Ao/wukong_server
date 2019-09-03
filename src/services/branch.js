@@ -6,7 +6,7 @@ const exec = util.promisify(require('child_process').exec);
 
 const branchModel = require('../models/branch');
 const {respCode} = require('../codes/branch');
-const pwd = require('../../conf/pwd');
+const PWD = require('../../conf/pwd');
 const {getNowDatetime} = require('../common/utils/datetime');
 
 const dataConvertToRes = (data) => {
@@ -36,8 +36,9 @@ const branch = {
         let result = {...returns};
 
         // 1. 执行脚本
+        let project = PWD.testProject;
         const {stdout, stderr} = await exec('./create_branch.sh', {
-            cwd: pwd.DEV,
+            cwd: project.SOURCE,
         }).catch(error => {
             console.error(`执行的错误: ${error}`);
             result.code = respCode.ERROR_SYS;
@@ -175,8 +176,9 @@ const branch = {
         }
         // 3. 执行脚本
         // const {stdout, stderr} = await 
+        const project = PWD.testProject;
         exec(`./bin.sh  ${options.branch}`, {
-            cwd: pwd.YUFA_DEV,
+            cwd: project.YUFA,
         }).then((stdout, stderr) => {
             console.log(`stdout1: ${stdout}`);
             console.error(`stderr1: ${stderr}`);
@@ -232,8 +234,9 @@ const branch = {
             return result;
         }
         // 3. 执行脚本
+        const project = PWD.testProject;
         exec(`./bin.sh`, {
-            cwd: pwd.ONLINE_DEV,
+            cwd: project.ONLINE,
         }).then((stdout, stderr) => {
             console.log(`stdout1: ${stdout}`);
             console.error(`stderr1: ${stderr}`);
@@ -298,8 +301,9 @@ const branch = {
             return result;
         }
         // 3. 执行脚本
+        const project = PWD.testProject;
         const {stdout, stderr} = await exec(`./merge_master.sh  ${branch}`, {
-            cwd: pwd.DEV,
+            cwd: project.SOURCE,
         }).catch(error => {
             console.error(`执行的错误: ${error}`);
             result.code = respCode.ERROR_IN_SHELL;
