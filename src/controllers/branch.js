@@ -121,6 +121,26 @@ const controller = {
         }
        
         ctx.body = result;
+    },
+
+    /**
+     * 执行 合并master
+     * @param {object} ctx 
+     */
+    async handelPublishedList(ctx) {
+        let result = {...resultModel};
+        try {
+            let listResult = await branchService.getPublishedList();
+            if (listResult.status) {
+                result.success = true;
+            }
+            result.message = respMessage[listResult.code];
+            result.data = listResult.returnData;
+        } catch (e) {
+            result.message = respMessage.ERROR_SYS;
+        }
+       
+        ctx.body = result;
     }
 }
 

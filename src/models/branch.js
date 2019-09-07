@@ -51,10 +51,10 @@ const branch = {
      * 获取所有已发布记录
      * @return {Array}      mysql执行结果
      */
-    async getAllPublishedBranch() {
+    async getPublishedList() {
         let _sql = `
         SELECT * from branch 
-        where publish=1
+        where publish=2
         limit 1`
         let result = await dbUtils.query(_sql)
         if (Array.isArray(result) && result.length > 0) {

@@ -22,7 +22,7 @@ const dataConvertToRes = (data) => {
 
 const returns = {
     status: false,
-    meassage: '',
+    code: '',
     returnData: null,
 }
 
@@ -123,9 +123,17 @@ const branch = {
      * @param  {object} formData 登录表单信息
      * @return {Array}      mysql执行结果
      */
-    async getAllPublished() {
-        let resultData = await branchModel.getAllPublishedBranch()
-        return resultData;
+    async getPublishedList() {
+        let result = {...returns};
+        let resultData = await branchModel.getPublishedList();
+        if (Array.isArray(resultData) && resultData.length > 0) {
+            result.code = respCode.SUCCESS;
+            result.returnData = resultData.map((item) => dataConvertToRes(item))
+        } else {
+            result.returnData = [];
+        }
+        result.status = true;
+        return result;
     },
 
     /**
