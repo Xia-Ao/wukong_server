@@ -1,5 +1,4 @@
 
-const validator = require('validator');
 const util = require('util');
 // const {execFileSync,execFile, execSync, exec} = require('child_process');
 const exec = util.promisify(require('child_process').exec);
@@ -9,7 +8,7 @@ const {respCode} = require('../codes/branch');
 const PWD = require('../../conf/pwd');
 const {getNowDatetime} = require('../common/utils/datetime');
 
-const dataConvertToRes = (data) => {
+const modalConvertToResp = (data) => {
     return {
         branch: data.branch,
         createTime: data.create_time,
@@ -105,7 +104,7 @@ const branch = {
      */
     async getBranchByBranch(branch) {
         let resultData = await branchModel.getBranchByBranch(branch)
-        let branchInfo = resultData ? dataConvertToRes(resultData) : null;
+        let branchInfo = resultData ? modalConvertToResp(resultData) : null;
         return branchInfo;
     },
 
@@ -113,8 +112,16 @@ const branch = {
      * 查找所有分支列表
      * @return {Array}      查找结果
      */
-    async getAllBranch() {
-        let result = await branchModel.getAllBranch()
+    async getList() {
+        let result = {...returns};
+        let resultData = await branchModel.getList();
+        if (Array.isArray(resultData) && resultData.length > 0) {
+            result.code = respCode.SUCCESS;
+            result.returnData = resultData.map((item) => modalConvertToResp(item))
+        } else {
+            result.returnData = [];
+        }
+        result.status = true;
         return result;
     },
 
@@ -128,7 +135,7 @@ const branch = {
         let resultData = await branchModel.getPublishedList();
         if (Array.isArray(resultData) && resultData.length > 0) {
             result.code = respCode.SUCCESS;
-            result.returnData = resultData.map((item) => dataConvertToRes(item))
+            result.returnData = resultData.map((item) => modalConvertToResp(item))
         } else {
             result.returnData = [];
         }
@@ -143,7 +150,7 @@ const branch = {
      */
     async getPublished() {
         let resultData = await branchModel.isQueeHasOne();
-        let branchInfo = resultData ? dataConvertToRes(resultData) : null;
+        let branchInfo = resultData ? modalConvertToResp(resultData) : null;
         return branchInfo;
     },
 
@@ -153,7 +160,7 @@ const branch = {
      */
     async isQueeHasTask() {
         let resultData = await branchModel.isQueeHasTask();
-        let branchInfo = resultData ? dataConvertToRes(resultData) : null;
+        let branchInfo = resultData ? modalConvertToResp(resultData) : null;
         return branchInfo;
     },
 
@@ -162,7 +169,7 @@ const branch = {
      * @param  {String} options 参数
      * @return {object}      mysql执行结果
      */
-    async handelYufaByBranch(options) {
+    async handleYufaByBranch(options) {
         let result = {...returns};
         // 1.获取当前分支信息
         let branchInfo = await this.getBranchByBranch(options.branch);
@@ -191,18 +198,18 @@ const branch = {
             console.log(`stdout1: ${stdout}`);
             console.error(`stderr1: ${stderr}`);
             // 预发完成，状态为2
-            branchModel.handelYufaByBranch(options.branch, 2);
+            branchModel.handleYufaByBranch(options.branch, 2);
         })
             .catch(error => {
                 console.error(`执行的错误: ${error}`);
                 result.code = respCode.ERROR_SYS;
                 // 预发布出错
-                branchModel.handelYufaByBranch(options.branch, 0);
+                branchModel.handleYufaByBranch(options.branch, 0);
             });
 
 
         // 4. 更新数据库
-        let yufaResult = await branchModel.handelYufaByBranch(options.branch, 1);
+        let yufaResult = await branchModel.handleYufaByBranch(options.branch, 1);
         if (yufaResult && yufaResult.changedRows * 1 > 0) {
             result.status = true;
             result.code = respCode.SUCCESS;
@@ -218,7 +225,7 @@ const branch = {
      * @param  {object} options 分支号
      * @return {object}      mysql执行结果
      */
-    async handelPublishByBranch(options) {
+    async handlePublishByBranch(options) {
 
         let result = {...returns};
         let branch = options.branch;
@@ -249,7 +256,7 @@ const branch = {
             console.log(`stdout1: ${stdout}`);
             console.error(`stderr1: ${stderr}`);
             // 正式发布完成，状态为2
-            branchModel.handelPublishedByBranch({
+            branchModel.handlePublishedByBranch({
                 branch,
                 publishedTime: getNowDatetime(),
                 status: 2,
@@ -259,7 +266,7 @@ const branch = {
                 console.error(`执行的错误: ${error}`);
                 result.code = respCode.ERROR_SYS;
                 // 正式发布出错 状态0
-                branchModel.handelPublishedByBranch({
+                branchModel.handlePublishedByBranch({
                     branch,
                     publishedTime: getNowDatetime(),
                     status: 0,
@@ -267,7 +274,7 @@ const branch = {
             });
 
         // 4. 更新数据库
-        let publishResult = await branchModel.handelPublishedByBranch({
+        let publishResult = await branchModel.handlePublishedByBranch({
             branch,
             publishedTime: getNowDatetime(),
             status: 1,
@@ -287,7 +294,7 @@ const branch = {
      * @param  {String} branch 分支号
      * @return {object}      mysql执行结果
      */
-    async handelMergeMasterByBranch(branch) {
+    async handleMergeMasterByBranch(branch) {
         let result = {...returns};
 
         // 1.获取当前分支信息
@@ -321,7 +328,7 @@ const branch = {
         console.error(`stderr1: ${stderr}`);
 
         // 4. 更新数据库
-        let mergeResult = await branchModel.handelMergeMasterByBranch({
+        let mergeResult = await branchModel.handleMergeMasterByBranch({
             branch,
         });
         if (mergeResult && mergeResult.changedRows * 1 > 0) {

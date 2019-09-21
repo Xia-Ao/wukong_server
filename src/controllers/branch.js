@@ -1,7 +1,5 @@
-// const uuidv1 = require('uuid/v1');
 const branchService = require('../services/branch');
 const {respMessage} = require('../codes/branch');
-const {getNowDatetime} = require('../common/utils/datetime');
 
 let resultModel = {
     success: false,
@@ -39,7 +37,7 @@ const controller = {
      * 执行预发布
      * @param {object} ctx 
      */
-    async handelYufa(ctx) {
+    async handleYufa(ctx) {
         let formData = ctx.request.body;
         let branch = formData.branch;
         let result = {...resultModel};
@@ -49,7 +47,7 @@ const controller = {
             return;
         }
         try {
-            let yufaResult = await branchService.handelYufaByBranch({
+            let yufaResult = await branchService.handleYufaByBranch({
                 branch,
             });
             if (yufaResult.status) {
@@ -69,7 +67,7 @@ const controller = {
      * 执行 正式发布
      * @param {object} ctx 
      */
-    async handelPublish(ctx) {
+    async handlePublish(ctx) {
         let formData = ctx.request.body;
         let branch = formData.branch;
         let result = {...resultModel};
@@ -79,7 +77,7 @@ const controller = {
             return;
         }
         try {
-            let publishResult = await branchService.handelPublishByBranch({
+            let publishResult = await branchService.handlePublishByBranch({
                 branch,
             });
             if (publishResult.status) {
@@ -100,7 +98,7 @@ const controller = {
      * 执行 合并master
      * @param {object} ctx 
      */
-    async handelMergeMaster(ctx) {
+    async handleMergeMaster(ctx) {
         let formData = ctx.request.body;
         let branch = formData.branch;
         let result = {...resultModel};
@@ -110,7 +108,7 @@ const controller = {
             return;
         }
         try {
-            let mergedResult = await branchService.handelMergeMasterByBranch(branch);
+            let mergedResult = await branchService.handleMergeMasterByBranch(branch);
             if (mergedResult.status) {
                 result.success = true;
             }
@@ -119,18 +117,37 @@ const controller = {
         } catch (e) {
             result.message = respMessage.ERROR_SYS;
         }
-       
         ctx.body = result;
     },
 
     /**
-     * 执行 合并master
+     * 获取发布历史
      * @param {object} ctx 
      */
-    async handelPublishedList(ctx) {
+    async handlePublishedList(ctx) {
         let result = {...resultModel};
         try {
             let listResult = await branchService.getPublishedList();
+            if (listResult.status) {
+                result.success = true;
+            }
+            result.message = respMessage[listResult.code];
+            result.data = listResult.returnData;
+        } catch (e) {
+            result.message = respMessage.ERROR_SYS;
+        }
+       
+        ctx.body = result;
+    },
+    
+    /**
+     * 获取所有分支
+     * @param {object} ctx 
+     */
+    async handleList(ctx) {
+        let result = {...resultModel};
+        try {
+            let listResult = await branchService.getList();
             if (listResult.status) {
                 result.success = true;
             }

@@ -37,8 +37,10 @@ const branch = {
      * 获取所有分支列表
      * @return {Array}      mysql执行结果
      */
-    async getAllBranch() {
-        let _sql = `SELECT * from branch limit 1`
+    async getList() {
+        let _sql = `
+            SELECT * from branch
+            `
         let result = await dbUtils.query(_sql)
         if (Array.isArray(result) && result.length > 0) {
             return result;
@@ -53,11 +55,12 @@ const branch = {
      */
     async getPublishedList() {
         let _sql = `
-        SELECT * from branch 
-        where publish=2
-        limit 1`
-        let result = await dbUtils.query(_sql)
+            SELECT * from branch 
+            where published=2 and merged_master=1
+            `
+        let result = await dbUtils.query(_sql);
         if (Array.isArray(result) && result.length > 0) {
+            console.log(result);
             return result;
         } else {
             return [];
@@ -89,7 +92,7 @@ const branch = {
      * 查看当前项目是否有发布计划
      * @return {object|null}        查找结果
      */
-    async isQueeHasTask(options) {
+    async isQueeHasTask() {
         let _sql = `
         SELECT * from branch
         where yufa>0 and (published<=1 or merged_master<=0)
@@ -108,7 +111,7 @@ const branch = {
      * @param  {String} branch 分支号
      * @return {object|null}        查找结果
      */
-    async handelYufaByBranch(branch, status) {
+    async handleYufaByBranch(branch, status) {
         let _sql = `
             UPDATE branch set yufa=${status}
             where branch="${branch}"
@@ -122,7 +125,7 @@ const branch = {
      * @param  {obejct} options 查找条件参数
      * @return {object|null}        查找结果
      */
-    async handelPublishedByBranch(options) {
+    async handlePublishedByBranch(options) {
         let _sql = `
             UPDATE branch set 
                 published=${options.status} , 
@@ -138,7 +141,7 @@ const branch = {
      * @param  {obejct} options 查找条件参数
      * @return {object|null}        查找结果
      */
-    async handelMergeMasterByBranch(options) {
+    async handleMergeMasterByBranch(options) {
         let _sql = `
             UPDATE branch set merged_master=1
             where branch="${options.branch}"

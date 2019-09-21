@@ -4,12 +4,12 @@ const process = require('process')
 const PATH = {
     DEV: {
         testProject: {
-            SOURCE: '/Users/xiaao/work/workspace/wukong/vue-demo',
+            SOURCE: '/Users/xiaao/work/workspace/wukong/wukong_space/sourceCode',
             YUFA: '/Users/xiaao/work/workspace/wukong/wukong_space/yufa',
             ONLINE: '/Users/xiaao/work/workspace/wukong/wukong_space/online',
         },
         VueDemo: {
-            SOURCE: '/Users/xiaao/work/workspace/wukong/vue-demo',
+            SOURCE: '/Users/xiaao/work/workspace/wukong/wukong_space/sourceCode',
             YUFA: '/Users/xiaao/work/workspace/wukong/wukong_space/yufa',
             ONLINE: '/Users/xiaao/work/workspace/wukong/wukong_space/online',
         }

@@ -6,13 +6,13 @@ const json = require('koa-json')
 const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
-const bodyParser = require('koa-bodyparser')
 const session = require('koa-session-minimal')
 const MysqlStore = require('koa-mysql-session')
 
 const index = require('./src/routes/index')
 const users = require('./src/routes/users')
 const branch = require('./src/routes/branch')
+const project = require('./src/routes/project')
 
 const config = require('./config');
 const { normalizePort, onError, onListening} = require('./bin/binUtil');
@@ -37,7 +37,7 @@ app.use(session({
 onerror(app)
 
 
-// middlewares
+// middlewares  使用ctx.body解析中间件
 app.use(bodyparser({
   enableTypes:['json', 'form', 'text']
 }))
@@ -52,8 +52,6 @@ app.use(views(__dirname + '/src/views', {
   extension: 'ejs'
 }))
 
-// 使用ctx.body解析中间件
-app.use(bodyParser())
 
 // logger
 app.use(async (ctx, next) => {
@@ -67,6 +65,7 @@ app.use(async (ctx, next) => {
 app.use(index.routes(), index.allowedMethods())
 app.use(users.routes(), users.allowedMethods())
 app.use(branch.routes(), branch.allowedMethods())
+app.use(project.routes(), project.allowedMethods())
 
 // error-handling
 app.on('error', (err, ctx) => {
