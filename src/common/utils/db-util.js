@@ -1,4 +1,4 @@
-const {database: config = {}} = require('../../../config');
+const { database: config = {} } = require('../../../config');
 const mysql = require('mysql');
 
 const pool = mysql.createPool({
@@ -6,6 +6,7 @@ const pool = mysql.createPool({
     user: config.USER,
     password: config.PASSWORD,
     database: config.DATABASE,
+    multipleStatements: true,
 })
 
 /**
@@ -20,6 +21,7 @@ const query = (sql, values) => new Promise((resovle, reject) => {
         } else {
             connection.query(sql, values, (err, rows) => {
                 if (err) {
+                    console.error(err);
                     reject(err);
                 } else {
                     resovle(rows);
@@ -30,7 +32,7 @@ const query = (sql, values) => new Promise((resovle, reject) => {
     });
 })
 
-const createTable =  (sql) =>  query(sql, []);
+const createTable = (sql) => query(sql, []);
 
 
 const findDataById = (table, id) => {
@@ -45,7 +47,7 @@ const findDataByPage = function (table, keys, start, end) {
 }
 
 
-const insertData =  (table, values) => {
+const insertData = (table, values) => {
     let _sql = "INSERT INTO ?? SET ?"
     return query(_sql, [table, values])
 }

@@ -57,7 +57,12 @@ const controller = {
                 result.success = true;
             }
             result.message = respMessage[listResult.code];
-            result.data = listResult.returnData;
+            result.data = {
+                list: listResult.returnData,
+                total: listResult.returnData.length,
+                page: 1,
+                pageSize: 200,
+            };
         } catch (e) {
             result.message = respMessage.ERROR_SYS;
         }

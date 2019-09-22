@@ -26,6 +26,8 @@ const branchCode = {
 
   ERROR_IN_SHELL: 'ERROR_IN_SHELL',
 
+  EMPTY_PEOJECT_KEY: 'EMPTY_PEOJECT_KEY',
+
 }
 
 const branchMessage = {
@@ -50,7 +52,9 @@ const branchMessage = {
 
   PUBLISH_PLAN_NOT_EQ: '队列中没有发布任务或与当前发布任务不匹配',
   
-  ERROR_IN_SHELL: '脚本执行出错'
+  ERROR_IN_SHELL: '脚本执行出错',
+
+  EMPTY_PEOJECT_KEY: '项目标识符project_key为空',
 
 }
 

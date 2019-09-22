@@ -3,19 +3,36 @@ const util = require('util');
 // const {execFileSync,execFile, execSync, exec} = require('child_process');
 const exec = util.promisify(require('child_process').exec);
 
+const {getNowDatetime, parseStampToFormat} = require('../common/utils/datetime');
 const branchModel = require('../models/branch');
 const {respCode} = require('../codes/branch');
+const {projectRespCode} = require('../codes/project');
 const PWD = require('../../conf/pwd');
-const {getNowDatetime} = require('../common/utils/datetime');
+const projectService = require('../services/project');
+const {random} = require('../common/utils/utils');
 
 const modalConvertToResp = (data) => {
     return {
         branch: data.branch,
+        projectKey: data.project_key,
+        projectName: data.project_name,
         createTime: data.create_time,
         yufa: data.yufa,
         published: data.published,
         publishedTime: data.published_time,
         mergedMaster: data.merged_master,
+    }
+}
+const formDataConvertToModal = (data) => {
+    return {
+        branch: data.branch,
+        project_key: data.projectKey,
+        project_name: data.projectName,
+        create_time: data.createTime,
+        yufa: data.yufa,
+        published: data.published,
+        published_time: data.publishedTime,
+        merged_master: data.mergedMaster,
     }
 }
 
@@ -29,50 +46,71 @@ const branch = {
 
     /**
      * 创建用户
+     * @param {string} projectKey 应用key
      * @return {object}     创建结果 
      */
-    async create() {
+    async create(projectKey) {
         let result = {...returns};
 
-        // 1. 执行脚本
-        let project = PWD.testProject;
-        const {stdout, stderr} = await exec('./create_branch.sh', {
-            cwd: project.SOURCE,
-        }).catch(error => {
-            console.error(`执行的错误: ${error}`);
+        // 1. 获取对应 应用信息
+        let project = null;
+        let projectResult = await projectService.getProjectByProjectKey(projectKey);
+        if (!projectResult.status) {
+            result.code = projectRespCode.PROJECT_NOT_FIND_BY_KEY;
+            return result;
+        }
+        project = projectResult.returnData;
+        if (!project) {
             result.code = respCode.ERROR_SYS;
-        });
-
-        console.log(`stdout1: ${stdout}`);
-        console.error(`stderr1: ${stderr}`);
-        let reg = /new_branch_name=@(.+)@/igm;
-        let matchArr = stdout.match(reg);
-        if (matchArr.lenght <= 0) {
-            result.code = respCode.ERROR_IN_SHELL;
-            return result;
-        }
-        let branch = matchArr[0].replace(reg, '$1');
-        if (!branch) {
-            result.code = respCode.ERROR_IN_SHELL;
             return result;
         }
 
+        let branch = `branch_${parseStampToFormat(new Date().getTime(),'yyyyMMddhhmmss')}_${random(5)}`
         // 2.分支号是否存在
-        let exitOne = await this.getExistOne(branch);
+        let exitOne = await this.getExistOne(branch, projectKey);
         if (exitOne) {
             result.code = respCode.SAME_BRANCH;
             result.returnData = exitOne;
             return result;
         }
-        // 3. 更新数据库插入分支号
+
+        // 3. 执行脚本
+        // let project = PWD.testProject;
+        const {stdout, stderr} = await exec(`./create_branch.sh  ${branch}`, {
+            // cwd: project.SOURCE,
+            cwd: project.sourcePath,
+        }).catch(error => {
+            console.error(`执行的错误: ${error}`);
+            result.code = respCode.ERROR_IN_SHELL;
+            return result;
+        });
+
+        console.log(`stdout1: ${stdout}`);
+        console.error(`stderr1: ${stderr}`);
+        // let reg = /new_branch_name=@(.+)@/igm;
+        // let matchArr = stdout.match(reg);
+        // if (matchArr.lenght <= 0) {
+        //     result.code = respCode.ERROR_IN_SHELL;
+        //     return result;
+        // }
+        // let branch = matchArr[0].replace(reg, '$1');
+        // if (!branch) {
+        //     result.code = respCode.ERROR_IN_SHELL;
+        //     return result;
+        // }
+
+        
+        // 4. 更新数据库插入分支号
         let branchResult = await branchModel.create({
             branch,
-            create_time: getNowDatetime(),
+            projectName: project.projectName,
+            peojectKey: project.projectKey,
+            createTime: getNowDatetime(),
         })
         if (branchResult && branchResult.insertId * 1 > 0) {
             result.status = true;
             result.code = respCode.CREATE_SUCCESS;
-            result.returnData = await this.getBranchByBranch(branch);
+            result.returnData = await this.getBranchByBranchAndProjectKey(branch, projectKey);
         } else {
             result.code = respCode.ERROR_SYS;
         }
@@ -82,18 +120,16 @@ const branch = {
 
     /**
      * 通过分支号查看分支是否存在
-     * @param  {object} formData 登录表单信息
+     * @param  {string} branch 分支号
+     * @param  {string} projectKey 应用key
      * @return {object}      mysql执行结果
      */
-    async getExistOne(branch) {
-        let resultData = await branchModel.getBranchByBranch(branch)
-        let branchInfo = null;
-        if (resultData) {
-            branchInfo = {
-                branch: resultData.branch,
-                createTime: resultData.create_time,
-            };
-        }
+    async getExistOne(branch, projectKey = '') {
+        
+        let resultData = projectKey ? 
+            await branchModel.getBranchByBranchAndProjectKey(branch, projectKey) : 
+            await branchModel.getBranchByBranch(branch);
+        let branchInfo = resultData ? modalConvertToResp(resultData) : null;
         return branchInfo;
     },
 
@@ -112,15 +148,13 @@ const branch = {
      * 查找所有分支列表
      * @return {Array}      查找结果
      */
-    async getList() {
+    async getList(params) {
         let result = {...returns};
-        let resultData = await branchModel.getList();
-        if (Array.isArray(resultData) && resultData.length > 0) {
+        let resultData = await branchModel.getList(params);
+        if (Array.isArray(resultData.list) && resultData.list.length > 0) {
             result.code = respCode.SUCCESS;
-            result.returnData = resultData.map((item) => modalConvertToResp(item))
-        } else {
-            result.returnData = [];
         }
+        result.returnData = resultData;
         result.status = true;
         return result;
     },

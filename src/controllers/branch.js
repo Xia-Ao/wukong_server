@@ -16,9 +16,16 @@ const controller = {
      */
     async createBranch(ctx) {
         let result = {...resultModel}
+        let formData = ctx.request.body;
+        let {projectKey = ''} = formData;
+        if (!projectKey) {
+            result.message = respMessage.EMPTY_PEOJECT_KEY;
+            ctx.body = result;
+            return;
+        }
         // 创建分支
         try {
-            let branchResult = await branchService.create()
+            let branchResult = await branchService.create(projectKey)
             if (branchResult.status) {
                 result.success = true;
             }
@@ -146,8 +153,9 @@ const controller = {
      */
     async handleList(ctx) {
         let result = {...resultModel};
+        let params = ctx.request.query;
         try {
-            let listResult = await branchService.getList();
+            let listResult = await branchService.getList(params);
             if (listResult.status) {
                 result.success = true;
             }

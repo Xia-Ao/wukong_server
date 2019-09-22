@@ -24,6 +24,8 @@ const code = {
 
   NOT_FIND_PROJECT: 'NOT_FIND_PROJECT',
 
+  PROJECT_NOT_FIND_BY_KEY: 'PROJECT_NOT_FIND_BY_KEY',
+
 }
 
 const message = {
@@ -48,6 +50,8 @@ const message = {
   EMPTY_REPOSITORY: '仓库地址为空',
 
   NOT_FIND_PROJECT: '没有数据',
+
+  PROJECT_NOT_FIND_BY_KEY: '应用不存在',
 
 }
 
