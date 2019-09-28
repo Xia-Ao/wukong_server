@@ -9,8 +9,9 @@ router
   .post('/yufa', branchController.handleYufa)                   // 预发布
   .post('/publish', branchController.handlePublish)             // 正式发布
   .post('/merge_master', branchController.handleMergeMaster)    // 合并主干
-  .get('/published_list', branchController.handlePublishedList) // 获取发布历史
+  .get('/history_list', branchController.handlePublishedList) // 获取发布历史
   .get('/list', branchController.handleList) // 获取所有分支
+  .get('/branch', branchController.handelBranchByBranch)       // 根据分支号查询分支
 
 
 

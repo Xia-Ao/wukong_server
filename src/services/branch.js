@@ -3,19 +3,20 @@ const util = require('util');
 // const {execFileSync,execFile, execSync, exec} = require('child_process');
 const exec = util.promisify(require('child_process').exec);
 
-const {getNowDatetime, parseStampToFormat} = require('../common/utils/datetime');
+const { getNowDatetime, parseStampToFormat } = require('../common/utils/datetime');
 const branchModel = require('../models/branch');
-const {respCode} = require('../codes/branch');
-const {projectRespCode} = require('../codes/project');
+const { respCode } = require('../codes/branch');
 const PWD = require('../../conf/pwd');
 const projectService = require('../services/project');
-const {random} = require('../common/utils/utils');
+const { random } = require('../common/utils/utils');
 
 const modalConvertToResp = (data) => {
     return {
+        id: data.id,
         branch: data.branch,
         projectKey: data.project_key,
         projectName: data.project_name,
+        planPublishTime: data.plan_publish_time,
         createTime: data.create_time,
         yufa: data.yufa,
         published: data.published,
@@ -28,6 +29,7 @@ const formDataConvertToModal = (data) => {
         branch: data.branch,
         project_key: data.projectKey,
         project_name: data.projectName,
+        plan_publish_time: data.planPublishTime,
         create_time: data.createTime,
         yufa: data.yufa,
         published: data.published,
@@ -46,17 +48,18 @@ const branch = {
 
     /**
      * 创建用户
-     * @param {string} projectKey 应用key
+     * @param {string} formData 表单数据
      * @return {object}     创建结果 
      */
-    async create(projectKey) {
-        let result = {...returns};
+    async create(formData) {
+        let result = { ...returns };
+        const { projectKey, planPublishTime } = formData;
 
         // 1. 获取对应 应用信息
         let project = null;
         let projectResult = await projectService.getProjectByProjectKey(projectKey);
         if (!projectResult.status) {
-            result.code = projectRespCode.PROJECT_NOT_FIND_BY_KEY;
+            result.code = respCode.PROJECT_NOT_FIND_BY_KEY;
             return result;
         }
         project = projectResult.returnData;
@@ -65,7 +68,7 @@ const branch = {
             return result;
         }
 
-        let branch = `branch_${parseStampToFormat(new Date().getTime(),'yyyyMMddhhmmss')}_${random(5)}`
+        let branch = `branch_${parseStampToFormat(new Date().getTime(), 'yyyyMMddhhmmss')}_${random(5)}`
         // 2.分支号是否存在
         let exitOne = await this.getExistOne(branch, projectKey);
         if (exitOne) {
@@ -76,7 +79,7 @@ const branch = {
 
         // 3. 执行脚本
         // let project = PWD.testProject;
-        const {stdout, stderr} = await exec(`./create_branch.sh  ${branch}`, {
+        const { stdout, stderr } = await exec(`./create_branch.sh  ${branch}`, {
             // cwd: project.SOURCE,
             cwd: project.sourcePath,
         }).catch(error => {
@@ -85,27 +88,15 @@ const branch = {
             return result;
         });
 
-        console.log(`stdout1: ${stdout}`);
-        console.error(`stderr1: ${stderr}`);
-        // let reg = /new_branch_name=@(.+)@/igm;
-        // let matchArr = stdout.match(reg);
-        // if (matchArr.lenght <= 0) {
-        //     result.code = respCode.ERROR_IN_SHELL;
-        //     return result;
-        // }
-        // let branch = matchArr[0].replace(reg, '$1');
-        // if (!branch) {
-        //     result.code = respCode.ERROR_IN_SHELL;
-        //     return result;
-        // }
 
-        
+
         // 4. 更新数据库插入分支号
         let branchResult = await branchModel.create({
             branch,
-            projectName: project.projectName,
-            peojectKey: project.projectKey,
-            createTime: getNowDatetime(),
+            project_name: project.projectName,
+            project_key: project.projectKey,
+            create_time: getNowDatetime(),
+            plan_publish_time: planPublishTime,
         })
         if (branchResult && branchResult.insertId * 1 > 0) {
             result.status = true;
@@ -125,9 +116,9 @@ const branch = {
      * @return {object}      mysql执行结果
      */
     async getExistOne(branch, projectKey = '') {
-        
-        let resultData = projectKey ? 
-            await branchModel.getBranchByBranchAndProjectKey(branch, projectKey) : 
+
+        let resultData = projectKey ?
+            await branchModel.getBranchByBranchAndProjectKey(branch, projectKey) :
             await branchModel.getBranchByBranch(branch);
         let branchInfo = resultData ? modalConvertToResp(resultData) : null;
         return branchInfo;
@@ -145,15 +136,35 @@ const branch = {
     },
 
     /**
+     * 通过分支号和应用标识符key查找分支信息
+     * @param  {object} formData 登录表单信息
+     * @return {object}      mysql执行结果
+     */
+    async getBranchByBranchAndProjectKey(branch, projectKey) {
+        let resultData = await branchModel.getBranchByBranchAndProjectKey(branch, projectKey)
+        let branchInfo = resultData ? modalConvertToResp(resultData) : null;
+        return branchInfo;
+    },
+
+    /**
      * 查找所有分支列表
      * @return {Array}      查找结果
      */
     async getList(params) {
-        let result = {...returns};
+        let result = { ...returns };
         let resultData = await branchModel.getList(params);
         if (Array.isArray(resultData.list) && resultData.list.length > 0) {
             result.code = respCode.SUCCESS;
         }
+        resultData.list.forEach(item => {
+            let status = 0;
+            if (item.mergedMaster) {
+                status = 2;
+            } else if (item.yufa && !item.mergedMaster) {
+                status = 1;
+            }
+            item.status = status;
+        })
         result.returnData = resultData;
         result.status = true;
         return result;
@@ -165,7 +176,7 @@ const branch = {
      * @return {Array}      mysql执行结果
      */
     async getPublishedList() {
-        let result = {...returns};
+        let result = { ...returns };
         let resultData = await branchModel.getPublishedList();
         if (Array.isArray(resultData) && resultData.length > 0) {
             result.code = respCode.SUCCESS;
@@ -204,7 +215,7 @@ const branch = {
      * @return {object}      mysql执行结果
      */
     async handleYufaByBranch(options) {
-        let result = {...returns};
+        let result = { ...returns };
         // 1.获取当前分支信息
         let branchInfo = await this.getBranchByBranch(options.branch);
         // 2.1 分支是否存在
@@ -226,6 +237,7 @@ const branch = {
         // 3. 执行脚本
         // const {stdout, stderr} = await 
         const project = PWD.testProject;
+        console.log(project.YUFA);
         exec(`./bin.sh  ${options.branch}`, {
             cwd: project.YUFA,
         }).then((stdout, stderr) => {
@@ -261,7 +273,7 @@ const branch = {
      */
     async handlePublishByBranch(options) {
 
-        let result = {...returns};
+        let result = { ...returns };
         let branch = options.branch;
 
         // 1.获取当前分支信息
@@ -329,7 +341,7 @@ const branch = {
      * @return {object}      mysql执行结果
      */
     async handleMergeMasterByBranch(branch) {
-        let result = {...returns};
+        let result = { ...returns };
 
         // 1.获取当前分支信息
         let branchInfo = await this.getBranchByBranch(branch);
@@ -351,7 +363,7 @@ const branch = {
         }
         // 3. 执行脚本
         const project = PWD.testProject;
-        const {stdout, stderr} = await exec(`./merge_master.sh  ${branch}`, {
+        const { stdout, stderr } = await exec(`./merge_master.sh  ${branch}`, {
             cwd: project.SOURCE,
         }).catch(error => {
             console.error(`执行的错误: ${error}`);
@@ -375,7 +387,24 @@ const branch = {
         return result;
     },
 
-
+    /**
+     * 根据分支好获取发布队列
+     * @param  {String} branch 
+     * @return {Object}   
+     */
+    async handleBranchByBranch(branch) {
+        let result = { ...returns };
+        let resultData = await this.getBranchByBranch(branch);
+        if (resultData.branch) {
+            result.status = true;
+            result.code = respCode.SUCCESS;
+            result.returnData = resultData;
+        } else {
+            result.returnData = [];
+        }
+        result.status = true;
+        return result;
+    },
 
 };
 

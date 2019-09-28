@@ -28,6 +28,8 @@ const branchCode = {
 
   EMPTY_PEOJECT_KEY: 'EMPTY_PEOJECT_KEY',
 
+  PROJECT_NOT_FIND_BY_KEY: 'PROJECT_NOT_FIND_BY_KEY',
+
 }
 
 const branchMessage = {
@@ -55,6 +57,8 @@ const branchMessage = {
   ERROR_IN_SHELL: '脚本执行出错',
 
   EMPTY_PEOJECT_KEY: '项目标识符project_key为空',
+
+  PROJECT_NOT_FIND_BY_KEY: '应用不存在',
 
 }
 

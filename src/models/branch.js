@@ -6,9 +6,11 @@ const SQL = require('./SQL/branch');
 
 const modalConvertToResp = (data) => {
     return {
+        id: data.id,
         branch: data.branch,
         projectKey: data.project_key,
         projectName: data.project_name,
+        planPublishTime: data.plan_publish_time,
         createTime: data.create_time,
         yufa: data.yufa,
         published: data.published,
@@ -18,25 +20,26 @@ const modalConvertToResp = (data) => {
 }
 const formDataConvertToModal = (data) => {
     return {
-        branch: data.branch,
-        project_key: data.projectKey,
-        project_name: data.projectName,
-        create_time: data.createTime,
-        yufa: data.yufa,
-        published: data.published,
-        published_time: data.publishedTime,
-        merged_master: data.mergedMaster,
+        branch: data.branch || null,
+        project_key: data.projectKey || null,
+        project_name: data.projectName || null,
+        plan_publish_time: data.planPublishTime || null,
+        create_time: data.createTime || null,
+        yufa: data.yufa || null,
+        published: data.published || null,
+        published_time: data.publishedTime || null,
+        merged_master: data.mergedMaster || null,
     }
 }
 
 const branch = {
     /**
     * 数据库创建新分支
-    * @param  {object} data 分支数据
+    * @param  {object} modal 分支数据
     * @return {object}       mysql执行结果
     */
-    async create(data) {
-        let result = await dbUtils.insertData('branch', formDataConvertToModal(data));
+    async create(modal) {
+        let result = await dbUtils.insertData('branch', modal);
         return result;
     },
 

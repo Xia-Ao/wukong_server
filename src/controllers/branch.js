@@ -1,5 +1,5 @@
 const branchService = require('../services/branch');
-const {respMessage} = require('../codes/branch');
+const { respMessage } = require('../codes/branch');
 
 let resultModel = {
     success: false,
@@ -15,9 +15,9 @@ const controller = {
      * @param {*} ctx 
      */
     async createBranch(ctx) {
-        let result = {...resultModel}
+        let result = { ...resultModel }
         let formData = ctx.request.body;
-        let {projectKey = ''} = formData;
+        let { projectKey = '' } = formData;
         if (!projectKey) {
             result.message = respMessage.EMPTY_PEOJECT_KEY;
             ctx.body = result;
@@ -25,7 +25,7 @@ const controller = {
         }
         // 创建分支
         try {
-            let branchResult = await branchService.create(projectKey)
+            let branchResult = await branchService.create(formData)
             if (branchResult.status) {
                 result.success = true;
             }
@@ -35,7 +35,7 @@ const controller = {
             console.warn(e);
             result.message = respMessage.ERROR_SYS;
         }
-       
+
         ctx.body = result;
 
     },
@@ -47,7 +47,8 @@ const controller = {
     async handleYufa(ctx) {
         let formData = ctx.request.body;
         let branch = formData.branch;
-        let result = {...resultModel};
+        let result = 
+        { ...resultModel };
         if (!branch) {
             result.message = respMessage.EMPTY_BRANCH;
             ctx.body = result;
@@ -77,7 +78,7 @@ const controller = {
     async handlePublish(ctx) {
         let formData = ctx.request.body;
         let branch = formData.branch;
-        let result = {...resultModel};
+        let result = { ...resultModel };
         if (!branch) {
             result.message = respMessage.EMPTY_BRANCH;
             ctx.body = result;
@@ -108,7 +109,7 @@ const controller = {
     async handleMergeMaster(ctx) {
         let formData = ctx.request.body;
         let branch = formData.branch;
-        let result = {...resultModel};
+        let result = { ...resultModel };
         if (!branch) {
             result.message = respMessage.EMPTY_BRANCH;
             ctx.body = result;
@@ -132,7 +133,7 @@ const controller = {
      * @param {object} ctx 
      */
     async handlePublishedList(ctx) {
-        let result = {...resultModel};
+        let result = { ...resultModel };
         try {
             let listResult = await branchService.getPublishedList();
             if (listResult.status) {
@@ -143,16 +144,16 @@ const controller = {
         } catch (e) {
             result.message = respMessage.ERROR_SYS;
         }
-       
+
         ctx.body = result;
     },
-    
+
     /**
      * 获取所有分支
      * @param {object} ctx 
      */
     async handleList(ctx) {
-        let result = {...resultModel};
+        let result = { ...resultModel };
         let params = ctx.request.query;
         try {
             let listResult = await branchService.getList(params);
@@ -164,7 +165,33 @@ const controller = {
         } catch (e) {
             result.message = respMessage.ERROR_SYS;
         }
-       
+
+        ctx.body = result;
+    },
+
+    /**
+     * 根据分支好获取分支
+     * @param {object} ctx 
+     */
+    async handelBranchByBranch(ctx) {
+        let result = { ...resultModel };
+        let { branch } = ctx.request.query;
+        if (!branch) {
+            result.message = respMessage.EMPTY_BRANCH;
+            ctx.body = result;
+            return;
+        }
+        try {
+            let branchResult = await branchService.handleBranchByBranch(branch);
+            if (branchResult.status) {
+                result.success = true;
+            }
+            result.message = respMessage[branchResult.code];
+            result.data = branchResult.returnData;
+        } catch (e) {
+            result.message = respMessage.ERROR_SYS;
+        }
+
         ctx.body = result;
     }
 }
