@@ -237,7 +237,6 @@ const branch = {
         // 3. 执行脚本
         // const {stdout, stderr} = await 
         const project = PWD.testProject;
-        console.log(project.YUFA);
         exec(`./bin.sh  ${options.branch}`, {
             cwd: project.YUFA,
         }).then((stdout, stderr) => {
