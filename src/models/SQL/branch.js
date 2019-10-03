@@ -7,6 +7,13 @@ const branchSQL = {
         `
     },
 
+    getHistoryList(start, pageSize) {
+        return `
+            SELECT COUNT(*) AS total FROM branch WHERE published=2 and merged_master=1;
+            SELECT * FROM branch WHERE published=2 and merged_master=1 limit ${start}, ${pageSize}
+        `
+    },
+
     findBranchByBranch(branch) {
         return `
             SELECT * FROM branch where branch="${branch}" limit 1

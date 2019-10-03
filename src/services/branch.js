@@ -172,18 +172,25 @@ const branch = {
 
     /**
      * 获取所有已发布记录
-     * @param  {object} formData 登录表单信息
+     * @param  {object}  
      * @return {Array}      mysql执行结果
      */
-    async getPublishedList() {
+    async getPublishedList(params) {
         let result = { ...returns };
-        let resultData = await branchModel.getPublishedList();
-        if (Array.isArray(resultData) && resultData.length > 0) {
+        let resultData = await branchModel.getPublishedList(params);
+        if (Array.isArray(resultData.list) && resultData.list.length > 0) {
             result.code = respCode.SUCCESS;
-            result.returnData = resultData.map((item) => modalConvertToResp(item))
-        } else {
-            result.returnData = [];
         }
+        resultData.list.forEach(item => {
+            let status = 0;
+            if (item.mergedMaster) {
+                status = 2;
+            } else if (item.yufa && !item.mergedMaster) {
+                status = 1;
+            }
+            item.status = status;
+        })
+        result.returnData = resultData;
         result.status = true;
         return result;
     },

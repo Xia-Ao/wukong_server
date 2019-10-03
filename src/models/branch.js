@@ -73,12 +73,12 @@ const branch = {
         }
         return result
     },
-    
+
     /**
      * 获取所有分支列表
      * @return {Array}      mysql执行结果
      */
-    async getList({page = 1, pageSize = 10} = {}) {
+    async getList({ page = 1, pageSize = 10 } = {}) {
         var start = (page - 1) * pageSize;
         let result = await dbUtils.query(SQL.getAllList(start, pageSize));
         let total = result[0][0].total || 0;
@@ -87,28 +87,31 @@ const branch = {
             list = list.map(item => modalConvertToResp(item));
         }
         return {
-                total,
-                page,
-                pageSize,
-                list,
-            };
+            total,
+            page,
+            pageSize,
+            list,
+        };
     },
 
     /**
      * 获取所有已发布记录
      * @return {Array}      mysql执行结果
      */
-    async getPublishedList() {
-        let _sql = `
-            SELECT * from branch where published=2 and merged_master=1
-            `
-        let result = await dbUtils.query(_sql);
-        if (Array.isArray(result) && result.length > 0) {
-            console.log(result);
-            return result;
-        } else {
-            return [];
+    async getPublishedList({ page = 1, pageSize = 10 } = {}) {
+        var start = (page - 1) * pageSize;
+        let result = await dbUtils.query(SQL.getHistoryList(start, pageSize));
+        let total = result[0][0].total || 0;
+        let list = result[1];
+        if (Array.isArray(list) && list.length > 0) {
+            list = list.map(item => modalConvertToResp(item));
         }
+        return {
+            total,
+            page,
+            pageSize,
+            list,
+        };
     },
 
     /**
@@ -130,7 +133,7 @@ const branch = {
         return result
     },
 
-    
+
 
     /**
      * 查看当前项目是否有发布计划
@@ -179,7 +182,7 @@ const branch = {
         let result = await dbUtils.query(_sql)
         return result
     },
-    
+
     /**
      * 通过分支号 执行合并主干
      * @param  {obejct} options 查找条件参数

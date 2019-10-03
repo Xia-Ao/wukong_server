@@ -47,8 +47,8 @@ const controller = {
     async handleYufa(ctx) {
         let formData = ctx.request.body;
         let branch = formData.branch;
-        let result = 
-        { ...resultModel };
+        let result =
+            { ...resultModel };
         if (!branch) {
             result.message = respMessage.EMPTY_BRANCH;
             ctx.body = result;
@@ -134,8 +134,9 @@ const controller = {
      */
     async handlePublishedList(ctx) {
         let result = { ...resultModel };
+        let params = ctx.request.query;
         try {
-            let listResult = await branchService.getPublishedList();
+            let listResult = await branchService.getPublishedList(params);
             if (listResult.status) {
                 result.success = true;
             }
