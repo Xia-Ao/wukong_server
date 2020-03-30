@@ -1,3 +1,4 @@
+// 文件已废弃
 const project = {
     testProject: {
         name: '测试应用1',
