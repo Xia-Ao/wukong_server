@@ -11,7 +11,7 @@ npm run dev
 
 部署
 ```
-pm2 start app.js --watch --name wukong_server
+pm2 start app.js --watch --name wukong-server
 ```
 
 ## 功能：
