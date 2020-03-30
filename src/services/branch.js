@@ -80,7 +80,7 @@ const branch = {
         // 3. 执行脚本
         
         try {
-            const {stdout, stderr} = await exec(`./create_branch.sh  ${branch}`, {
+            const {stdout, stderr} = await exec(`./sh/create_branch.sh  ${branch}`, {
                 // todo mac本地测试是的路径
                 // cwd: PWD.projectKey.SOURCE,
                 cwd: project.sourcePath,
@@ -407,7 +407,7 @@ const branch = {
         // 3. 执行脚本
         // const project = PWD.testProject;
         try {
-            const {stdout, stderr} = await exec(`./merge_master.sh  ${branch}`, {
+            const {stdout, stderr} = await exec(`./sh/merge_master.sh  ${branch}`, {
                 // cwd: PWD[branchInfo.projectKey].SOURCE, // TODO 本地测试
                 cwd: project.sourcePath,
             })
