@@ -2,7 +2,7 @@ const projectSQL = {
 
     getAllProjectList () {
         return `
-            SELECT * from project
+            SELECT * from project ORDER BY create_time DESC
         `
     },
     getProjectByProjectKey (key) {

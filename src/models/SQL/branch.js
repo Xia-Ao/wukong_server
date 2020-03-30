@@ -3,14 +3,14 @@ const branchSQL = {
     getAllList(start, pageSize) {
         return `
             SELECT COUNT(*) AS total FROM branch;
-            SELECT * FROM branch limit ${start}, ${pageSize}
+            SELECT * FROM branch ORDER BY create_time DESC limit ${start}, ${pageSize}
         `
     },
 
     getHistoryList(start, pageSize) {
         return `
             SELECT COUNT(*) AS total FROM branch WHERE published=2 and merged_master=1;
-            SELECT * FROM branch WHERE published=2 and merged_master=1 limit ${start}, ${pageSize}
+            SELECT * FROM branch WHERE published=2 and merged_master=1 ORDER BY create_time DESC limit ${start}, ${pageSize}
         `
     },
 
