@@ -4,14 +4,14 @@ const process = require('process')
 const PATH = {
     DEV: {
         testProject: {
-            SOURCE: '/Users/xiaao/work/workspace/wukong/wukong_space/sourceCode',
-            YUFA: '/Users/xiaao/work/workspace/wukong/wukong_space/yufa',
-            ONLINE: '/Users/xiaao/work/workspace/wukong/wukong_space/online',
+            SOURCE: '/Users/xiaao/work/workspace/project/wukong/wukong_space/sourceCode',
+            YUFA: '/Users/xiaao/work/workspace/project/wukong/wukong_space/yufa',
+            ONLINE: '/Users/xiaao/work/workspace/project/wukong/wukong_space/online',
         },
         VueDemo: {
-            SOURCE: '/Users/xiaao/work/workspace/wukong/wukong_space/sourceCode',
-            YUFA: '/Users/xiaao/work/workspace/wukong/wukong_space/yufa',
-            ONLINE: '/Users/xiaao/work/workspace/wukong/wukong_space/online',
+            SOURCE: '/Users/xiaao/work/workspace/project/wukong/wukong_space/sourceCode',
+            YUFA: '/Users/xiaao/work/workspace/project/wukong/wukong_space/yufa',
+            ONLINE: '/Users/xiaao/work/workspace/project/wukong/wukong_space/online',
         }
 
     },

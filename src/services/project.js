@@ -2,7 +2,7 @@
  * @Author: ao.xia 
  * @Date: 2019-09-21 15:23:17 
  * @Last Modified by: ao.xia
- * @Last Modified time: 2019-09-22 01:10:20
+ * @Last Modified time: 2020-03-30 17:57:13
  */
 
 const projectModel = require('../models/project');
@@ -41,6 +41,34 @@ const project = {
         if (exitOne) {
             result.code = respCode.PROJECT_NAME_OR_KEY_EXIT;
             result.returnData = exitOne;
+            return result;
+        }
+        // 2. 更新数据库插入分支号
+        let projectResult = await projectModel.create(Object.assign(formData, {
+            createTime: getNowDatetime(),
+        }))
+        if (projectResult && projectResult.affectedRows * 1 > 0) {
+            result.status = true;
+            result.code = respCode.CREATE_SUCCESS;
+            result.returnData = await this.getProjectByProjectKey(formData.projectKey);
+        } else {
+            result.code = respCode.ERROR_SYS;
+        }
+
+        return result;
+    },
+
+    /**
+     * 更新应用
+     * @return {object}     更新应用结果 
+     */
+    async update(formData) {
+        let result = { ...returns };
+
+        // 1. 检查当前name，key是否存在
+        let exitOne = await this.getExitOne(formData);
+        if (!exitOne) {
+            result.code = respCode.PROJECT_NAME_OR_KEY_NOT_EXIT;
             return result;
         }
         // 2. 更新数据库插入分支号

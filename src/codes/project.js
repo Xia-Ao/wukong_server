@@ -10,6 +10,8 @@ const code = {
 
   PROJECT_NAME_OR_KEY_EXIT: 'PROJECT_NAME_OR_KEY_EXIT',
 
+  PROJECT_NAME_OR_KEY_NOT_EXIT: 'PROJECT_NAME_OR_KEY_NOT_EXIT',
+
   EMPTY_PROJECT_NAME: 'EMPTY_PROJECT_NAME',
 
   EMPTY_PROJECT_KEY: 'EMPTY_PROJECT_KEY',
@@ -36,6 +38,8 @@ const message = {
 
 
   PROJECT_NAME_OR_KEY_EXIT: '应用名称或者应用key值已存在，请使用正确的名称或者key',
+
+  PROJECT_NAME_OR_KEY_NOT_EXIT: '应用名称或者应用key值不存在，请使用正确的名称或者key',
 
   EMPTY_PROJECT_NAME: '应用名称为空',
 

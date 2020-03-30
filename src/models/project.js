@@ -43,6 +43,16 @@ const project = {
     },
 
     /**
+    * 更新应用
+    * @param  {object} formData 数据
+    * @return {object}       mysql执行结果
+    */
+    async update(formData) {
+        let result = await dbUtils.updateData('project', formDataConvertModel(formData));
+        return result;
+    },
+
+    /**
      * 根据key查询应用
      * @param  {String} key 应用key
      * @return {object|null}        查找结果

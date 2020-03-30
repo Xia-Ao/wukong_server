@@ -22,4 +22,5 @@ yarn-error.log*
 
 package-lock.json
 
+# 敏感文件
 config.js

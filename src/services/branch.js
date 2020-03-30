@@ -3,12 +3,12 @@ const util = require('util');
 // const {execFileSync,execFile, execSync, exec} = require('child_process');
 const exec = util.promisify(require('child_process').exec);
 
-const { getNowDatetime, parseStampToFormat } = require('../common/utils/datetime');
+const {getNowDatetime, parseStampToFormat} = require('../common/utils/datetime');
 const branchModel = require('../models/branch');
-const { respCode } = require('../codes/branch');
+const {respCode} = require('../codes/branch');
 const PWD = require('../../conf/pwd');
 const projectService = require('../services/project');
-const { random } = require('../common/utils/utils');
+const {random} = require('../common/utils/utils');
 
 const modalConvertToResp = (data) => {
     return {
@@ -52,8 +52,8 @@ const branch = {
      * @return {object}     创建结果 
      */
     async create(formData) {
-        let result = { ...returns };
-        const { projectKey, planPublishTime } = formData;
+        let result = {...returns};
+        const {projectKey, planPublishTime, branchName = ''} = formData;
 
         // 1. 获取对应 应用信息
         let project = null;
@@ -68,7 +68,7 @@ const branch = {
             return result;
         }
 
-        let branch = `branch_${parseStampToFormat(new Date().getTime(), 'yyyyMMddhhmmss')}_${random(5)}`
+        let branch = branchName ? branchName :  `branch_${parseStampToFormat(new Date().getTime(), 'yyyyMMddhhmmss')}_${random(5)}`;
         // 2.分支号是否存在
         let exitOne = await this.getExistOne(branch, projectKey);
         if (exitOne) {
@@ -78,16 +78,19 @@ const branch = {
         }
 
         // 3. 执行脚本
-        // let project = PWD.testProject;
-        const { stdout, stderr } = await exec(`./create_branch.sh  ${branch}`, {
-            // cwd: project.SOURCE,
-            cwd: project.sourcePath,
-        }).catch(error => {
-            console.error(`执行的错误: ${error}`);
+        
+        try {
+            const {stdout, stderr} = await exec(`./create_branch.sh  ${branch}`, {
+                // todo mac本地测试是的路径
+                // cwd: PWD.testProject.SOURCE,
+                cwd: project.sourcePath,
+            })
+            console.log(stderr, stdout);
+        } catch(e) {
+            console.error(`执行的错误: ${e}`);
             result.code = respCode.ERROR_IN_SHELL;
             return result;
-        });
-
+        }
 
 
         // 4. 更新数据库插入分支号
@@ -151,7 +154,7 @@ const branch = {
      * @return {Array}      查找结果
      */
     async getList(params) {
-        let result = { ...returns };
+        let result = {...returns};
         let resultData = await branchModel.getList(params);
         if (Array.isArray(resultData.list) && resultData.list.length > 0) {
             result.code = respCode.SUCCESS;
@@ -176,7 +179,7 @@ const branch = {
      * @return {Array}      mysql执行结果
      */
     async getPublishedList(params) {
-        let result = { ...returns };
+        let result = {...returns};
         let resultData = await branchModel.getPublishedList(params);
         if (Array.isArray(resultData.list) && resultData.list.length > 0) {
             result.code = respCode.SUCCESS;
@@ -222,7 +225,7 @@ const branch = {
      * @return {object}      mysql执行结果
      */
     async handleYufaByBranch(options) {
-        let result = { ...returns };
+        let result = {...returns};
         // 1.获取当前分支信息
         let branchInfo = await this.getBranchByBranch(options.branch);
         // 2.1 分支是否存在
@@ -241,8 +244,7 @@ const branch = {
             result.code = respCode.OTHER_TASK;
             return result;
         }
-        // 3. 执行脚本
-        // const {stdout, stderr} = await 
+        // 3. 异步执行脚本，通过then catch获取结果
         const project = PWD.testProject;
         exec(`./bin.sh  ${options.branch}`, {
             cwd: project.YUFA,
@@ -279,7 +281,7 @@ const branch = {
      */
     async handlePublishByBranch(options) {
 
-        let result = { ...returns };
+        let result = {...returns};
         let branch = options.branch;
 
         // 1.获取当前分支信息
@@ -347,7 +349,7 @@ const branch = {
      * @return {object}      mysql执行结果
      */
     async handleMergeMasterByBranch(branch) {
-        let result = { ...returns };
+        let result = {...returns};
 
         // 1.获取当前分支信息
         let branchInfo = await this.getBranchByBranch(branch);
@@ -369,15 +371,18 @@ const branch = {
         }
         // 3. 执行脚本
         const project = PWD.testProject;
-        const { stdout, stderr } = await exec(`./merge_master.sh  ${branch}`, {
-            cwd: project.SOURCE,
-        }).catch(error => {
-            console.error(`执行的错误: ${error}`);
+        try {
+            const {stdout, stderr} = await exec(`./merge_master.sh  ${branch}`, {
+                cwd: project.SOURCE,
+            })
+            console.log(`stdout1: ${stdout}`);
+            console.error(`stderr1: ${stderr}`);
+        } catch(error) {
+            console.error(`执行merge_master.sh错误: ${error}`);
             result.code = respCode.ERROR_IN_SHELL;
             return result;
-        });
-        console.log(`stdout1: ${stdout}`);
-        console.error(`stderr1: ${stderr}`);
+        }
+        
 
         // 4. 更新数据库
         let mergeResult = await branchModel.handleMergeMasterByBranch({
@@ -399,7 +404,7 @@ const branch = {
      * @return {Object}   
      */
     async handleBranchByBranch(branch) {
-        let result = { ...returns };
+        let result = {...returns};
         let resultData = await this.getBranchByBranch(branch);
         if (resultData.branch) {
             result.status = true;

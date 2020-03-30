@@ -44,6 +44,39 @@ const controller = {
 
     },
 
+    /**
+     * 创建新应用
+     * @param {*} ctx 
+     */
+    async updateProject(ctx) {
+        let result = { ...resultModel };
+        let formData = ctx.request.body;
+
+        // 1 校验数据
+        let validateResult = projectService.validatorFormData(formData);
+        if (!validateResult.status) {
+            result.message = respMessage[validateResult.code];
+            ctx.body = result;
+            return;
+        }
+
+        // 2 创建分支
+        try {
+            let projectResult = await projectService.update(formData)
+            if (projectResult.status) {
+                result.success = true;
+            }
+            result.message = respMessage[projectResult.code];
+            result.data = projectResult.returnData;
+        } catch (e) {
+            console.warn(e);
+            result.message = respMessage.ERROR_SYS;
+        }
+
+        ctx.body = result;
+
+    },
+
 
     /**
      * 获取所有应用
