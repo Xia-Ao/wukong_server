@@ -82,7 +82,7 @@ const branch = {
         try {
             const {stdout, stderr} = await exec(`./create_branch.sh  ${branch}`, {
                 // todo mac本地测试是的路径
-                // cwd: PWD.testProject.SOURCE,
+                // cwd: PWD.projectKey.SOURCE,
                 cwd: project.sourcePath,
             })
             console.log(stderr, stdout);
@@ -228,6 +228,7 @@ const branch = {
         let result = {...returns};
         // 1.获取当前分支信息
         let branchInfo = await this.getBranchByBranch(options.branch);
+
         // 2.1 分支是否存在
         if (!branchInfo) {
             result.code = respCode.EMPTY_BRANCH;
@@ -244,10 +245,27 @@ const branch = {
             result.code = respCode.OTHER_TASK;
             return result;
         }
+        // 2.4 根据分支获取对应应用信息
+        if (!branchInfo.projectKey) {
+            result.code = respCode.PROJECT_NOT_FIND_BY_KEY;
+            return result;
+        }
+        let projectResult = await projectService.getProjectByProjectKey(branchInfo.projectKey);
+        if (!projectResult.status) {
+            result.code = respCode.PROJECT_NOT_FIND_BY_KEY;
+            return result;
+        }
+        let project = projectResult.returnData;
+        if (!project) {
+            result.code = respCode.ERROR_SYS;
+            return result;
+        }
+
+
         // 3. 异步执行脚本，通过then catch获取结果
-        const project = PWD.testProject;
         exec(`./bin.sh  ${options.branch}`, {
-            cwd: project.YUFA,
+            // cwd: PWD[branchInfo.projectKey].SOURCE,  // TODO 本地测试
+            cwd: project.yufaPath,
         }).then((stdout, stderr) => {
             console.log(`stdout1: ${stdout}`);
             console.error(`stderr1: ${stderr}`);
@@ -369,11 +387,29 @@ const branch = {
             result.code = respCode.PUBLISH_PLAN_NOT_EQ;
             return result;
         }
+        
+        // 2.4 根据分支获取对应应用信息
+        if (!branchInfo.projectKey) {
+            result.code = respCode.PROJECT_NOT_FIND_BY_KEY;
+            return result;
+        }
+        let projectResult = await projectService.getProjectByProjectKey(branchInfo.projectKey);
+        if (!projectResult.status) {
+            result.code = respCode.PROJECT_NOT_FIND_BY_KEY;
+            return result;
+        }
+        let project = projectResult.returnData;
+        if (!project) {
+            result.code = respCode.ERROR_SYS;
+            return result;
+        }
+
         // 3. 执行脚本
-        const project = PWD.testProject;
+        // const project = PWD.testProject;
         try {
             const {stdout, stderr} = await exec(`./merge_master.sh  ${branch}`, {
-                cwd: project.SOURCE,
+                // cwd: PWD[branchInfo.projectKey].SOURCE, // TODO 本地测试
+                cwd: project.sourcePath,
             })
             console.log(`stdout1: ${stdout}`);
             console.error(`stderr1: ${stderr}`);

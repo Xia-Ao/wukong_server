@@ -18,19 +18,20 @@ const PATH = {
 
     PRODECTION: {
         testProject: {
-            SOURCE: '/root/workspace/wukongServer/projectFloder/testProject/sourceCode',
-            YUFA: '/root/workspace/wukongServer/projectFloder/testProject/yufa',
-            ONLINE: '/root/workspace/wukongServer/projectFloder/testProject/online',
+            SOURCE: '/root/workspace/wukong/projectFloder/testProject/sourceCode',
+            YUFA: '/root/workspace/wukong/projectFloder/testProject/yufa',
+            ONLINE: '/root/workspace/wukong/projectFloder/testProject/online',
         },
         VueDemo: {
-            SOURCE: '/root/workspace/wukongServer/VueDemo/sourceCode',
-            YUFA: '/root/workspace/wukongServer/VueDemo/yufa',
-            ONLINE: '/root/workspace/wukongServer/VueDemo/online',
+            SOURCE: '/root/workspace/wukong/VueDemo/sourceCode',
+            YUFA: '/root/workspace/wukong/VueDemo/yufa',
+            ONLINE: '/root/workspace/wukong/VueDemo/online',
         }
     },
 }
+console.log('运行环境为', process.env.NODE_ENV);
 
-const pwd = process.env.NODE_ENV === 'production' ? PATH.PRODECTION : PATH.DEV
+const pwd = process.env.NODE_ENV === 'production' ? PATH.PRODECTION : PATH.DEV;
 
 
 module.exports = pwd
